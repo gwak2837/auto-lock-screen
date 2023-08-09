@@ -44,6 +44,8 @@ const Webcam = NodeWebcam.create({
 });
 
 async function main() {
+  let warn = 0;
+
   while (true) {
     const imageData = await new Promise((resolve, reject) => {
       Webcam.capture("test_picture", (err, data) => {
@@ -56,14 +58,34 @@ async function main() {
 
     const detections = await faceapi(imageFile);
 
-    if (detections.length === 0) {
+    if (detections.length > 1) {
+      if (warn >= 2) {
+        turnOffDisplay();
+        await sleep(60_000);
+        warn = 0;
+      } else {
+        warn += 1;
+        console.log(
+          "Face detection:",
+          detections.length,
+          new Date().toLocaleString(),
+          warn
+        );
+      }
+    } else if (detections.length === 1) {
+      console.log(
+        "Face detection:",
+        detections.length,
+        new Date().toLocaleString(),
+        warn
+      );
+    } else {
       turnOffDisplay();
       await sleep(60_000);
-    } else {
-      console.log("Face detection:", detections.length);
+      warn = 0;
     }
 
-    await sleep(10_000);
+    await sleep(3_000);
   }
 }
 
