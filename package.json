@@ -1,0 +1,20 @@
+{
+  "name": "auto-lock-screen",
+  "version": "0.1.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "LGPL-3.0-only",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.10.0",
+    "@tensorflow/tfjs-node": "^4.10.0",
+    "@vladmandic/face-api": "^1.7.12",
+    "canvas": "^2.11.2",
+    "node-webcam": "^0.8.2",
+    "turn-off-display": "^0.2.0"
+  },
+  "type": "module"
+}
