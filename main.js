@@ -63,7 +63,7 @@ async function main() {
       console.log("Face detection:", detections.length);
     }
 
-    await sleep(5_000);
+    await sleep(10_000);
   }
 }
 
