@@ -47,42 +47,44 @@ async function main() {
   let warn = 0;
 
   while (true) {
-    const imageData = await new Promise((resolve, reject) => {
-      Webcam.capture("test_picture", (err, data) => {
-        if (err) return reject(err);
-        else resolve(data);
+    let detections;
+    try {
+      const imageData = await new Promise((resolve, reject) => {
+        Webcam.capture("test_picture", (err, data) => {
+          if (err) return reject(err);
+          else resolve(data);
+        });
       });
-    });
 
-    const imageFile = fs.readFileSync(imageData);
+      const imageFile = fs.readFileSync(imageData);
 
-    const detections = await faceapi(imageFile);
+      detections = await faceapi(imageFile);
+    } catch (error) {
+      console.log("👀 ~ error:", error);
+      continue;
+    }
+
+    console.log(
+      "Face detection:",
+      detections.length,
+      new Date().toLocaleString(),
+      warn
+    );
 
     if (detections.length > 1) {
-      if (warn >= 2) {
+      if (warn >= 10) {
+        warn = 0;
         turnOffDisplay();
         await sleep(60_000);
-        warn = 0;
       } else {
-        warn += 1;
-        console.log(
-          "Face detection:",
-          detections.length,
-          new Date().toLocaleString(),
-          warn
-        );
+        warn += 2 * detections.length;
       }
     } else if (detections.length === 1) {
-      console.log(
-        "Face detection:",
-        detections.length,
-        new Date().toLocaleString(),
-        warn
-      );
+      if (warn > 0) warn -= 1;
     } else {
+      warn = 0;
       turnOffDisplay();
       await sleep(60_000);
-      warn = 0;
     }
 
     await sleep(3_000);
